@@ -1,0 +1,9 @@
+{
+  "name": "homeschool-hero-ai",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:netlify": "netlify dev",
+    "dev:vercel": "vercel dev"
+  }
+}

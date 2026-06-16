@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homeschool Hero AI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">Homeschool Hero <span>AI</span></div>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#demo">Demo</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="nav-btn" href="#generator">Start Free</a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <p class="badge">AI-powered planning for homeschool families</p>
+      <h1>Create homeschool lessons, worksheets, and quizzes in minutes.</h1>
+      <p class="subtitle">Choose a grade, subject, and topic. Instantly get printable lessons, practice work, quizzes, and answer keys.</p>
+      <div class="hero-buttons">
+        <a class="primary-btn" href="#generator">Start Free</a>
+        <a class="secondary-btn" href="#demo">See Example Lesson</a>
+      </div>
+      <p class="small-text">No teaching degree needed. Built for busy parents.</p>
+    </div>
+    <div class="hero-card">
+      <h3>Today’s Lesson Preview</h3>
+      <p><strong>Grade:</strong> 5th Grade</p>
+      <p><strong>Subject:</strong> Math</p>
+      <p><strong>Topic:</strong> Fractions</p>
+      <ul>
+        <li>Warm-up questions</li>
+        <li>Step-by-step lesson</li>
+        <li>Printable worksheet</li>
+        <li>Quiz + answer key</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="problem">
+    <h2>Homeschool planning takes hours. It shouldn’t.</h2>
+    <div class="three-columns">
+      <div>“What should I teach today?”</div>
+      <div>“Where can I find worksheets?”</div>
+      <div>“How do I know they understand it?”</div>
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <h2>Your AI homeschool assistant does the planning for you.</h2>
+    <div class="grid">
+      <div class="feature-card"><h3>Daily Lessons</h3><p>Generate step-by-step lessons by grade, subject, and topic.</p></div>
+      <div class="feature-card"><h3>Printable Worksheets</h3><p>Create practice sheets with space for answers.</p></div>
+      <div class="feature-card"><h3>Quizzes & Keys</h3><p>Make weekly tests, exit tickets, and answer keys.</p></div>
+      <div class="feature-card"><h3>Progress Tracking</h3><p>Save lessons by child and track completed work.</p></div>
+    </div>
+  </section>
+
+  <section class="how">
+    <h2>Plan a lesson in 3 simple steps.</h2>
+    <div class="steps">
+      <div><span>1</span><h3>Add Grade</h3><p>Example: 5th Grade</p></div>
+      <div><span>2</span><h3>Pick Topic</h3><p>Example: Math → Fractions</p></div>
+      <div><span>3</span><h3>Generate & Print</h3><p>Lesson, worksheet, quiz, and answer key.</p></div>
+    </div>
+  </section>
+
+  <section id="generator" class="generator">
+    <div class="generator-box">
+      <h2>Try the Lesson Generator</h2>
+      <p>Enter your child’s grade, subject, and topic. The AI will create a lesson, worksheet, quiz, and answer key.</p>
+      <form id="lessonForm">
+        <label>Grade Level</label>
+        <select id="grade">
+          <option>Kindergarten</option>
+          <option>1st Grade</option>
+          <option>2nd Grade</option>
+          <option>3rd Grade</option>
+          <option>4th Grade</option>
+          <option selected>5th Grade</option>
+          <option>6th Grade</option>
+          <option>7th Grade</option>
+          <option>8th Grade</option>
+          <option>High School</option>
+        </select>
+
+        <label>Subject</label>
+        <select id="subject">
+          <option selected>Math</option>
+          <option>English</option>
+          <option>Science</option>
+          <option>Social Studies</option>
+          <option>Spanish</option>
+        </select>
+
+        <label>Topic</label>
+        <input id="topic" type="text" value="Fractions" placeholder="Example: Fractions" />
+
+        <label>Learning Style</label>
+        <select id="learningStyle">
+          <option selected>Visual learner</option>
+          <option>Hands-on learner</option>
+          <option>Reading/writing learner</option>
+          <option>Auditory learner</option>
+          <option>Not sure</option>
+        </select>
+
+        <label>What do you want to generate?</label>
+        <select id="contentType">
+          <option value="complete" selected>Complete Lesson Pack</option>
+          <option value="lesson">Lesson Only</option>
+          <option value="worksheet">Worksheet Only</option>
+          <option value="quiz">Quiz Only</option>
+        </select>
+
+        <button type="submit" id="generateBtn">Generate With AI</button>
+      </form>
+    </div>
+    <div id="lessonOutput" class="output-card">
+      <h3>Your AI lesson will appear here.</h3>
+      <p>Choose a grade, subject, and topic, then click Generate With AI.</p>
+    </div>
+  </section>
+
+  <section id="demo" class="demo">
+    <h2>Example: 5th Grade Fractions Lesson</h2>
+    <div class="lesson-preview">
+      <h3>Today’s Lesson</h3>
+      <ul>
+        <li><strong>Warm-up:</strong> Convert 3 improper fractions.</li>
+        <li><strong>Mini lesson:</strong> Learn how mixed numbers work.</li>
+        <li><strong>Guided practice:</strong> Solve 5 problems together.</li>
+        <li><strong>Independent work:</strong> Complete 10 practice problems.</li>
+        <li><strong>Exit ticket:</strong> Answer 3 quick questions.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="pricing" class="pricing">
+    <h2>Start free. Upgrade when you need more.</h2>
+    <div class="price-grid">
+      <div class="price-card"><h3>Free</h3><p class="price">$0</p><p>5 lesson generations/month</p><a class="plan-btn" href="pricing.html">See Plans</a></div>
+      <div class="price-card popular"><h3>Basic</h3><p class="price">$9.99</p><p>Unlimited lesson plans, worksheets, and quizzes</p><a class="plan-btn" href="pricing.html">See Plans</a></div>
+      <div class="price-card"><h3>Premium</h3><p class="price">$19.99</p><p>Curriculum builder, report cards, and progress tracking</p><a class="plan-btn" href="pricing.html">See Plans</a></div>
+    </div>
+  </section>
+
+  <section id="faq" class="faq">
+    <h2>FAQ</h2>
+    <details><summary>Is this a full curriculum?</summary><p>It can create full lesson plans, but parents should review lessons and adjust them to their child’s needs.</p></details>
+    <details><summary>Can I print worksheets?</summary><p>Yes. The full version will include printable PDF downloads.</p></details>
+    <details><summary>Does it work for multiple kids?</summary><p>Yes. Paid plans can support multiple student profiles.</p></details>
+  </section>
+
+  <footer>
+    <h2>Spend less time planning and more time teaching.</h2>
+    <a class="primary-btn" href="#generator">Start Your Free Lesson Plan</a>
+    <p>© 2026 Homeschool Hero AI</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

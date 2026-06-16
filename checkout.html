@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Child Information | Homeschool Hero AI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="navbar">
+    <a class="logo" href="index.html">Homeschool Hero <span>AI</span></a>
+    <nav>
+      <a href="index.html#features">Features</a>
+      <a href="index.html#demo">Demo</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+    <a class="nav-btn" href="pricing.html">Choose Plan</a>
+  </header>
+
+  <main>
+    <section class="checkout-hero">
+      <p class="badge">Step 1 of 2</p>
+      <h1>Tell us about your child first</h1>
+      <p class="subtitle center">This helps Homeschool Hero AI create lessons that match your child's grade level, subjects, and learning needs.</p>
+    </section>
+
+    <section class="checkout-section">
+      <div class="checkout-card">
+        <div class="selected-plan-box">
+          <p>Selected plan</p>
+          <h2 id="selectedPlanName">Loading...</h2>
+          <strong id="selectedPlanPrice"></strong>
+        </div>
+
+        <form id="childInfoForm" class="child-form">
+          <div class="form-grid">
+            <label>
+              Parent name
+              <input type="text" name="parentName" required placeholder="Your name" />
+            </label>
+
+            <label>
+              Parent email
+              <input type="email" name="parentEmail" required placeholder="you@example.com" />
+            </label>
+
+            <label>
+              Child's first name
+              <input type="text" name="childName" required placeholder="Child's first name" />
+            </label>
+
+            <label>
+              Child's grade level
+              <select name="gradeLevel" required>
+                <option value="">Select grade</option>
+                <option>Pre-K</option>
+                <option>Kindergarten</option>
+                <option>1st Grade</option>
+                <option>2nd Grade</option>
+                <option>3rd Grade</option>
+                <option>4th Grade</option>
+                <option>5th Grade</option>
+                <option>6th Grade</option>
+                <option>7th Grade</option>
+                <option>8th Grade</option>
+                <option>9th Grade</option>
+                <option>10th Grade</option>
+                <option>11th Grade</option>
+                <option>12th Grade</option>
+              </select>
+            </label>
+
+            <label>
+              Main subject needed
+              <select name="mainSubject" required>
+                <option value="">Select subject</option>
+                <option>Math</option>
+                <option>Reading</option>
+                <option>Writing</option>
+                <option>Science</option>
+                <option>Social Studies</option>
+                <option>Spanish</option>
+                <option>Full Curriculum</option>
+              </select>
+            </label>
+
+            <label>
+              Learning style
+              <select name="learningStyle">
+                <option>Not sure yet</option>
+                <option>Visual learner</option>
+                <option>Hands-on learner</option>
+                <option>Reading/writing learner</option>
+                <option>Auditory learner</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Anything we should know? <span class="optional">Optional</span>
+            <textarea name="notes" rows="4" placeholder="Example: needs extra help with fractions, reads below grade level, likes sports examples..."></textarea>
+          </label>
+
+          <label class="checkbox-row">
+            <input type="checkbox" required />
+            <span>I understand I will be sent to Stripe to finish payment.</span>
+          </label>
+
+          <button class="primary-btn full-width" type="submit">Continue to Secure Payment</button>
+          <p class="fine-print">Your child information is saved in this browser for now. For automatic account setup later, connect this form to Supabase or another database.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Homeschool Hero AI</p>
+  </footer>
+
+  <script src="payment-config.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const selectedPlan = params.get('plan') || 'basic';
+    const stripeLink = PAYMENT_LINKS[selectedPlan];
+
+    if (!stripeLink || selectedPlan === 'free') {
+      window.location.href = 'pricing.html';
+    }
+
+    document.getElementById('selectedPlanName').textContent = PLAN_NAMES[selectedPlan] || 'Selected Plan';
+    document.getElementById('selectedPlanPrice').textContent = PLAN_PRICES[selectedPlan] || '';
+
+    document.getElementById('childInfoForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const childInfo = {
+        plan: selectedPlan,
+        planName: PLAN_NAMES[selectedPlan],
+        planPrice: PLAN_PRICES[selectedPlan],
+        parentName: formData.get('parentName'),
+        parentEmail: formData.get('parentEmail'),
+        childName: formData.get('childName'),
+        gradeLevel: formData.get('gradeLevel'),
+        mainSubject: formData.get('mainSubject'),
+        learningStyle: formData.get('learningStyle'),
+        notes: formData.get('notes'),
+        createdAt: new Date().toISOString()
+      };
+
+      localStorage.setItem('homeschoolHeroChildInfo', JSON.stringify(childInfo));
+      window.location.href = stripeLink;
+    });
+  </script>
+</body>
+</html>
