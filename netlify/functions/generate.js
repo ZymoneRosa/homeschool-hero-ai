@@ -1,6 +1,17 @@
 exports.handler = async (event) => {
   try {
-    const { topic, grade, learningStyle, outputType } = JSON.parse(event.body);
+    const { topic, grade, subject, learningStyle, contentType } = JSON.parse(event.body || "{}");
+
+    const prompt = `
+Create a ${contentType} for:
+Grade: ${grade}
+Subject: ${subject}
+Topic: ${topic}
+Learning Style: ${learningStyle}
+
+Make it parent-friendly, printable, organized, and include clear sections.
+If it is a worksheet, include student name line, date line, directions, questions, and answer spaces.
+`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -13,7 +24,7 @@ exports.handler = async (event) => {
         messages: [
           {
             role: "user",
-            content: `Create a ${outputType} for Grade ${grade} on ${topic} for a ${learningStyle} learner.`
+            content: prompt
           }
         ]
       })
@@ -21,10 +32,17 @@ exports.handler = async (event) => {
 
     const data = await response.json();
 
+    if (!response.ok) {
+      throw new Error(data.error?.message || "OpenAI request failed.");
+    }
+
+    const content = data.choices?.[0]?.message?.content || "No content generated.";
+
     return {
       statusCode: 200,
-      body: JSON.stringify(data)
+      body: JSON.stringify({ content })
     };
+
   } catch (error) {
     return {
       statusCode: 500,
