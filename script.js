@@ -1,54 +1,63 @@
-exports.handler = async (event) => {
+const lessonForm = document.getElementById("lessonForm");
+const output = document.getElementById("lessonOutput");
+const generateBtn = document.getElementById("generateBtn");
+
+function escapeHtml(text) {
+  return String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function renderText(text) {
+  return escapeHtml(text).replace(/\n/g, "<br>");
+}
+
+lessonForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const payload = {
+    grade: document.getElementById("grade").value,
+    subject: document.getElementById("subject").value,
+    topic: document.getElementById("topic").value || "Today’s lesson",
+    learningStyle: document.getElementById("learningStyle").value,
+    contentType: document.getElementById("contentType").value
+  };
+
+  generateBtn.disabled = true;
+  generateBtn.textContent = "Generating...";
+  output.innerHTML = `<h3>Creating your ${payload.subject} lesson...</h3><p>Please wait.</p>`;
+
   try {
-    const { topic, grade, subject, learningStyle, contentType } = JSON.parse(event.body || "{}");
-
-    const prompt = `
-Create a ${contentType} for:
-Grade: ${grade}
-Subject: ${subject}
-Topic: ${topic}
-Learning Style: ${learningStyle}
-
-Make it parent-friendly, printable, organized, and include clear sections.
-If it is a worksheet, include student name line, date line, directions, questions, and answer spaces.
-`;
-
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("/.netlify/functions/generate", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "user",
-            content: prompt
-          }
-        ]
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error?.message || "OpenAI request failed.");
+      throw new Error(data.error || "The AI generator could not complete the request.");
     }
 
-    const content = data.choices?.[0]?.message?.content || "No content generated.";
+    output.innerHTML = `
+      <div class="output-actions">
+        <button type="button" onclick="window.print()">Print</button>
+        <button type="button" id="copyLessonBtn">Copy</button>
+      </div>
+      <div class="generated-content">${renderText(data.content)}</div>
+    `;
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ content })
-    };
+    document.getElementById("copyLessonBtn").addEventListener("click", async () => {
+      await navigator.clipboard.writeText(data.content);
+      document.getElementById("copyLessonBtn").textContent = "Copied!";
+    });
 
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: error.message
-      })
-    };
+    output.innerHTML = `<h3>AI generator error</h3><p>${escapeHtml(error.message)}</p>`;
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate With AI";
   }
-};
+});
