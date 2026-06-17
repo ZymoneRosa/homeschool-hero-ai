@@ -1,6 +1,29 @@
 const lessonForm = document.getElementById("lessonForm");
 const output = document.getElementById("lessonOutput");
 const generateBtn = document.getElementById("generateBtn");
+const startFreeBtn = document.querySelector(".btn-primary, .start-free, a[href='#generator']");
+
+let freeLessons = localStorage.getItem("freeLessonsRemaining");
+
+if (freeLessons === null) {
+  freeLessons = 5;
+  localStorage.setItem("freeLessonsRemaining", freeLessons);
+} else {
+  freeLessons = Number(freeLessons);
+}
+
+function updateFreeLessonText() {
+  if (!document.getElementById("freeLessonCounter")) {
+    const counter = document.createElement("p");
+    counter.id = "freeLessonCounter";
+    counter.style.fontWeight = "700";
+    counter.style.marginTop = "15px";
+    generateBtn.insertAdjacentElement("afterend", counter);
+  }
+
+  document.getElementById("freeLessonCounter").textContent =
+    `${freeLessons} free lesson${freeLessons === 1 ? "" : "s"} remaining`;
+}
 
 function escapeHtml(text) {
   return String(text || "")
@@ -13,8 +36,34 @@ function renderText(text) {
   return escapeHtml(text).replace(/\n/g, "<br>");
 }
 
+if (startFreeBtn) {
+  startFreeBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    localStorage.setItem("freeLessonsRemaining", 5);
+    freeLessons = 5;
+    updateFreeLessonText();
+
+    document.getElementById("generator").scrollIntoView({
+      behavior: "smooth"
+    });
+  });
+}
+
+updateFreeLessonText();
+
 lessonForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (freeLessons <= 0) {
+    output.innerHTML = `
+      <h3>Your free lessons are used up.</h3>
+      <p>You have used all 5 free lesson generations.</p>
+      <p>Please choose a paid plan to continue creating lessons.</p>
+      <a href="pricing.html" class="btn-primary">View Plans</a>
+    `;
+    return;
+  }
 
   const payload = {
     grade: document.getElementById("grade").value,
@@ -31,7 +80,9 @@ lessonForm.addEventListener("submit", async (event) => {
   try {
     const response = await fetch("/.netlify/functions/generate", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(payload)
     });
 
@@ -40,6 +91,10 @@ lessonForm.addEventListener("submit", async (event) => {
     if (!response.ok) {
       throw new Error(data.error || "The AI generator could not complete the request.");
     }
+
+    freeLessons -= 1;
+    localStorage.setItem("freeLessonsRemaining", freeLessons);
+    updateFreeLessonText();
 
     output.innerHTML = `
       <div class="output-actions">
@@ -56,36 +111,9 @@ lessonForm.addEventListener("submit", async (event) => {
 
   } catch (error) {
     output.innerHTML = `
-      <h3>Free Sample Lesson: 5th Grade Fractions</h3>
-      <p><strong>Objective:</strong> Students will understand how to identify and simplify fractions.</p>
-
-      <h3>Warm-Up</h3>
-      <p>Write these fractions: 1/2, 2/4, 3/6. Ask: What do they have in common?</p>
-
-      <h3>Mini Lesson</h3>
-      <p>A fraction shows part of a whole. The top number is the numerator. The bottom number is the denominator.</p>
-
-      <h3>Guided Practice</h3>
-      <p>1. What fraction is shaded if 3 out of 8 pieces are colored?</p>
-      <p>2. Simplify 2/4.</p>
-      <p>3. Simplify 4/8.</p>
-
-      <h3>Worksheet</h3>
-      <p>Name: __________________ Date: __________</p>
-      <p>1. Simplify 6/12: __________</p>
-      <p>2. Simplify 3/9: __________</p>
-      <p>3. Which is bigger: 1/2 or 1/4? __________</p>
-      <p>4. Draw a circle and shade 1/3 of it.</p>
-      <p>5. Write one fraction equal to 1/2: __________</p>
-
-      <h3>Answer Key</h3>
-      <p>1. 1/2</p>
-      <p>2. 1/3</p>
-      <p>3. 1/2</p>
-      <p>4. Drawing should show one-third shaded.</p>
-      <p>5. Examples: 2/4, 3/6, 4/8</p>
-
-      <p><strong>Note:</strong> This free sample appears when AI credits are unavailable.</p>
+      <h3>AI generator error</h3>
+      <p>${escapeHtml(error.message)}</p>
+      <p>If this says quota exceeded, add credits to your OpenAI account.</p>
     `;
   } finally {
     generateBtn.disabled = false;
